@@ -8,10 +8,17 @@ services:
     environment:
       # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
       # - SERVICES=s3,sqs,lambda,dynamodb,cloudwatch,sts,iam,apigateway,cloudformation,route53,secretsmanager,events,sns
+      - MAIN_DOCKER_NETWORK=localstack
       - AWS_ACCESS_KEY_ID=teste
       - AWS_DEFAULT_REGION=us-east-1
       - AWS_SECRET_ACCESS_KEY=teste
+      - LOCALSTACK_AUTH_TOKEN=${LOCALSTACK_AUTH_TOKEN- }
       - DEBUG=${DEBUG:-0}
     volumes:
       - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
+    networks:
+      - localstack
+networks:
+  localstack:
+      name: "localstack"

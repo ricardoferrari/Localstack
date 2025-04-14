@@ -42,4 +42,19 @@ endpoint_url = http://localhost:4566
 aws_access_key_id=test
 aws_secret_access_key=test
 
+Check with:
+awslocal sts get-caller-identity --profile localstack
+
 Now it is possible to call: aws s3 ls --profile localstack
+
+Attention: AWS CLI V2 is incompatible
+
+Another option is to instal: pip install awscli-local[ver1]
+
+# Go configuration
+
+Add AWS sdk
+go get -u github.com/aws/aws-sdk-go/...
+
+## SDK Examples
+https://github.com/awsdocs/aws-doc-sdk-examples/blob/main/go/sqs/ReceiveMessage/ReceiveMessage.go
