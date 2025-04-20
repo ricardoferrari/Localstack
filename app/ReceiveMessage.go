@@ -75,6 +75,19 @@ func GetMessages(sess *session.Session, queueURL *string, timeout *int64) (*sqs.
 	return msgResult, nil
 }
 
+func DeleteMessage(sess *session.Session, queueURL *string, handle *string) (string, error) {
+	svc := sqs.New(sess)
+	_, err := svc.DeleteMessage(&sqs.DeleteMessageInput{
+		QueueUrl:      queueURL,
+		ReceiptHandle: handle,
+	})
+	if err != nil {
+		fmt.Println(err)
+		return "", err
+	}
+	return *queueURL, nil
+}
+
 func main() {
 	// snippet-start:[sqs.go.receive_messages.args]
 	queue := flag.String("q", "", "The name of the queue")
@@ -102,7 +115,7 @@ func main() {
 		SharedConfigState: session.SharedConfigEnable,
 		Profile:           "localstack",
 		Config: aws.Config{
-			// 	Region: aws.String("us-east-1"),
+			// Region:   aws.String("us-east-1"),
 			Endpoint: aws.String("http://localhost:4566"),
 		},
 	}))
@@ -126,12 +139,24 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-
+	if len(msgResult.Messages) == 0 {
+		fmt.Println("No messages received")
+		return
+	}
 	fmt.Println("Message ID:     " + *msgResult.Messages[0].MessageId)
-
-	// snippet-start:[sqs.go.receive_messages.print_handle]
 	fmt.Println("Message Handle: " + *msgResult.Messages[0].ReceiptHandle)
-	// snippet-end:[sqs.go.receive_messages.print_handle]
+	fmt.Println("Message Body:   " + *msgResult.Messages[0].Body)
+
+	fmt.Println("Acknowledging the received message...")
+	// Acknowledge the message by deleting it from the queue
+	_, err = DeleteMessage(sess, queueURL, msgResult.Messages[0].ReceiptHandle)
+	if err != nil {
+		fmt.Println("Got an error deleting the message:")
+		fmt.Println(err)
+		return
+	}
+	fmt.Println("Deleted the message")
+
 }
 
 // snippet-end:[sqs.go.receive_messages]

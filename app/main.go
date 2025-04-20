@@ -16,6 +16,7 @@ import (
 
 func main() {
 
+	StartConsumer()
 	sess := session.Must(session.NewSessionWithOptions(session.Options{
 		SharedConfigState: session.SharedConfigEnable,
 		Profile:           "localstack",
