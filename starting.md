@@ -58,3 +58,12 @@ go get -u github.com/aws/aws-sdk-go/...
 
 ## SDK Examples
 https://github.com/awsdocs/aws-doc-sdk-examples/blob/main/go/sqs/ReceiveMessage/ReceiveMessage.go
+
+
+# Usage
+
+To send a message call:
+go run SendMessage.go -q game-update-queue -s "Teste do sender"
+
+Te receive and delete the message use:
+go run ReceiveMessage.go -q game-update-queue
